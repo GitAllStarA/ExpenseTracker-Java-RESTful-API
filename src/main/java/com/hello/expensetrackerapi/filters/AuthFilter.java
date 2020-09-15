@@ -33,7 +33,7 @@ public class AuthFilter extends GenericFilterBean {
                             .parseClaimsJws(token).getBody();
                     httpServletRequest.setAttribute("userId",Integer.parseInt(claims.get("userId").toString()));
                 } catch (Exception e){
-                    httpServletResponse.sendError(HttpStatus.FORBIDDEN.value(),"Invalid/Expired Token");
+                    httpServletResponse.sendError(HttpStatus.FORBIDDEN.value(), "Invalid/Expired Token");
                     return;
                 }
             } else {
