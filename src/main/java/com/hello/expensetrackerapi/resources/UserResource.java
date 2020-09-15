@@ -1,7 +1,10 @@
 package com.hello.expensetrackerapi.resources;
 
+import com.hello.expensetrackerapi.Constants;
 import com.hello.expensetrackerapi.domain.User;
 import com.hello.expensetrackerapi.services.UserService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +29,7 @@ public class UserResource {
 					String email=(String) userMap.get("email");
 					String password=(String) userMap.get("password");
 					User user = userService.validateUser(email,password);
-					Map<String, String> map = new HashMap<>();
-					map.put("message","login Successful");
-					return new ResponseEntity<>(map,HttpStatus.OK);
+					return new ResponseEntity<>(generateJWTToken(user),HttpStatus.OK);
 			}
 
 			@PostMapping("/register")
@@ -37,9 +39,24 @@ public class UserResource {
 				String email = (String) userMap.get("email");
 				String password = (String) userMap.get("password");
 				User user = userService.registerUser(firstName, lastName, email, password);
-				Map<String, String> map = new HashMap<>();
-				map.put("message", "registered successfully");
-				return new ResponseEntity<>(map, HttpStatus.OK);
+				return new ResponseEntity<>(generateJWTToken(user), HttpStatus.OK);
+			}
+
+			// 	Generating private method using J.W.T......
+			private Map<String,String> generateJWTToken(User user){
+				long timestamp = System.currentTimeMillis();
+				String token = Jwts.builder().signWith(SignatureAlgorithm.HS256, Constants.API_SECRET_KEY)
+						.setIssuedAt(new Date(timestamp))
+						.setExpiration(new Date(timestamp + Constants.TOKEN_VALIDITY))
+						.claim("userId",user.getUserId())
+						.claim("firstName",user.getFirstName())
+						.claim("lastName",user.getLastName())
+						.claim("email",user.getEmail())
+						.compact();
+				Map<String,String> map = new HashMap<>();
+				map.put("token",token);
+				return map;
+
 			}
 			
 }
