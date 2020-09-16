@@ -32,7 +32,7 @@ public class UserResource {
 					return new ResponseEntity<>(generateJWTToken(user),HttpStatus.OK);
 			}
 
-			@PostMapping("/register")
+			@PostMapping("/registered")
 			public ResponseEntity<Map<String, String>> registerUser(@RequestBody Map<String, Object> userMap){
 				String firstName = (String) userMap.get("firstName");
 				String lastName = (String) userMap.get("lastName");
