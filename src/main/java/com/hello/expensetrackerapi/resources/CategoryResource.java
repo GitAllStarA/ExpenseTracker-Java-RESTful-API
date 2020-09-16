@@ -1,6 +1,5 @@
 package com.hello.expensetrackerapi.resources;
 
-
 import com.hello.expensetrackerapi.domain.Category;
 import com.hello.expensetrackerapi.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 
@@ -21,10 +21,19 @@ public class CategoryResource {
     CategoryService categoryService;
 
     @GetMapping("")
-    public String getAllCategories(HttpServletRequest request)
+    public ResponseEntity<List<Category>> getAllCategories(HttpServletRequest request)
     {
         int userId = (Integer) request.getAttribute("userId");
-        return "Authentication UserId : "+ userId;
+        List<Category> category = categoryService.fetchAllCategories(userId);
+        return new ResponseEntity<>(category,HttpStatus.OK);
+    }
+
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<Category> getCategoryById(HttpServletRequest request,
+                                                    @PathVariable("categoryId") Integer categoryId){
+        int userId = (Integer) request.getAttribute("userId");
+        Category category = categoryService.fetchCategoryById(userId, categoryId);
+        return new ResponseEntity<>(category,HttpStatus.OK);
     }
 
     @PostMapping("")

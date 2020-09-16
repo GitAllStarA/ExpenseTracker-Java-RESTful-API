@@ -1,6 +1,6 @@
 package com.hello.expensetrackerapi.domain;
 
-public class Category {
+public class Category extends Object{
         private Integer categoryId;
         private Integer userId;
         private String title;
