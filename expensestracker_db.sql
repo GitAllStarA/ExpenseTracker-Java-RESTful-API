@@ -1,5 +1,5 @@
-drop database expense_tracker_db;
-drop user expense_tracker;
+drop database if exists expense_tracker_db;
+drop user if exists expense_tracker;
 
 create user expense_tracker with password 'root';
 create database expense_tracker_db with template=template0 owner=expense_tracker;
